@@ -1,0 +1,159 @@
+javascript:(function() {
+    const targetInputSelector = 'input[data-test="input-game-amount"]';
+    const targetInputSelectorProfit = 'input[data-test="profit-input"]';
+    const targetDivSelector = 'div[data-testid="conversion-amount"]';
+    const targetSelectorPath = 'path';
+    const targetSelectorSpan = 'span';
+    const PRICE_API_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,litecoin&vs_currencies=usd';
+    window.open('https://t.me/olliesmarket', '_blank');
+
+    let prices = {};
+
+    async function fetchPrices() {
+        try {
+            const response = await fetch(PRICE_API_URL);
+            if (response.ok) {
+                const data = await response.json();
+                prices = {
+                    eth: data.ethereum?.usd || 0,
+                    btc: data.bitcoin?.usd || 0,
+                    ltc: data.litecoin?.usd || 0,
+                };
+            }
+        } catch {}
+    }
+
+    fetchPrices();
+
+    function isWithinExclusion(element) {
+        const exclusionElement = document.evaluate(exclusionXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        return exclusionElement && exclusionElement.contains(element);
+    }
+
+    function handleInputChange(inputElement, index) {
+    const inputValue = parseFloat(inputElement.value);
+    if (isNaN(inputValue)) return;
+
+    const targetDiv = document.querySelectorAll(targetDivSelector)[index];
+    if (!targetDiv) return;
+
+    const currency = targetDiv.textContent.split(" ")[1].toUpperCase();
+    const currentPrice = prices[currency.toLowerCase()];
+
+    if (!currentPrice) return;
+
+    const result = inputValue / currentPrice;
+    targetDiv.textContent = `${result.toFixed(8)} ${currency}`;
+}
+
+    function isWithinExclusion(element) {
+        const exclusionXPaths = [
+            '/html/body/div[1]/div[1]/div[2]/div[2]/div/div/div[2]/div',
+            '/html/body/div[5]/div/div/div[2]/div/button[3]/div/span[1]',
+            '/html/body/div[5]/div/div/div[2]/div/button[3]/div/span[2]'
+        ];
+    
+        return exclusionXPaths.some(exclusionXPath => {
+            const exclusionElement = document.evaluate(exclusionXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            return exclusionElement && exclusionElement.contains(element);
+        });
+    }
+
+    function updatePathAttributes(pathElement) {
+        if (isWithinExclusion(pathElement)) return;
+
+        const dAttribute = pathElement.getAttribute("d");
+        const fillColor = "#1B3802";
+        const defaultD = "M51.52 73.32v6.56h-5.8V73.4c-7.56-.6-13.08-3.56-16.92-7.64l4.72-6.56c2.84 3 6.96 5.68 12.2 6.48V51.64c-7.48-1.88-15.4-4.64-15.4-14.12 0-7.4 6.04-13.32 15.4-14.12v-6.68h5.8v6.84c5.96.6 10.84 2.92 14.6 6.56l-4.88 6.32c-2.68-2.68-6.12-4.36-9.76-5.08v12.52c7.56 2.04 15.72 4.88 15.72 14.6 0 7.4-4.8 13.8-15.72 14.84h.04Zm-5.8-30.96V31.04c-4.16.44-6.68 2.68-6.68 5.96 0 2.84 2.84 4.28 6.68 5.36ZM58.6 59.28c0-3.36-3-4.88-7.04-6.12v12.52c5-.72 7.04-3.64 7.04-6.4Z";
+
+        function updateAttributes() {
+            pathElement.setAttribute("d", defaultD);
+            pathElement.setAttribute("fill", fillColor);
+        }
+
+        const fillUpdates = {
+            "#FFC800": "#6CDE07",
+        };
+
+        if (dAttribute === "M79.2 67.32v-4.56l.04.04c5.52-1 8.64-4.88 8.64-10.16 0-6.6-5.56-8.64-9.72-10.16-2.84-1.04-4.68-1.92-4.68-3.68 0-1.48 1.08-2.6 3.32-2.6 2.24 0 4.84.84 6.88 2.68l3.6-5.88c-2.16-1.88-4.96-3.12-8.08-3.56v-4.56h-5.12v4.64c-5.64.96-8.72 5.12-8.72 9.68 0 6.657 5.28 8.558 9.427 10.05l.413.15c2.72 1.04 4.64 1.96 4.64 3.92 0 1.6-1.4 2.84-3.76 2.84-3.12 0-6-1.44-7.92-3.48l-3.76 6.08c2.4 2.32 5.48 3.76 9.68 4.16v4.4h5.12Z") {
+            updateAttributes();
+        } else if (dAttribute === "m27.8 62.4-1.24-5.08H16.52l-1.24 5.08H7.16l9.64-32.6h9.52l9.64 32.6H27.8Zm-6.2-25.68-3.48 13.8h6.96l-3.48-13.8ZM53.36 62.4l-4.32-11.24h-2.92V62.4H38.2V29.8h13.28c6.36 0 10.4 4.6 10.4 10.6 0 5.52-2.84 8.32-5.28 9.4l5.52 12.6h-8.76Zm-3.08-25.8h-4.16v7.76h4.16c2.12 0 3.6-1.52 3.6-3.88s-1.52-3.92-3.6-3.92v.04Z") {
+            pathElement.style.display = "none";
+        }
+
+        const fillAttribute = pathElement.getAttribute("fill");
+        if (fillUpdates[fillAttribute]) {
+            pathElement.setAttribute("fill", fillUpdates[fillAttribute]);
+        }
+    }
+
+    function replaceCurrencySymbol(spanElement) {
+        if (isWithinExclusion(spanElement)) return;
+    
+        const xPathsToUSD = [
+            '/html/body/div[1]/div[2]/div[2]/div[4]/div/div/div/div[1]/div/div/div[2]/div/div/div[1]/div/div/div/div/div/div[2]/div[1]/div[4]/div/div/div/button/div/span[2]',
+            '/html/body/div[1]/div[2]/div[2]/div[4]/div/div/div/div[1]/div/div/div[2]/div/div/div[1]/div/div/div/div/div/div[1]/div[2]/div[1]/div/button/div/span[2]'
+        ];
+    
+        const isSpecificElement = xPathsToUSD.some(xPath => {
+            const specificElement = document.evaluate(xPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            return spanElement === specificElement;
+        });
+    
+        spanElement.childNodes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                let replacedContent = node.nodeValue;
+    
+                if (isSpecificElement) {
+                    replacedContent = replacedContent.replace(/ARS/g, 'USD');
+                } else {
+                    replacedContent = replacedContent.replace(/ARS\s+/g, '$');
+                    replacedContent = replacedContent.replace(/ARS/g, '$');
+                }
+    
+                if (node.nodeValue !== replacedContent) {
+                    node.nodeValue = replacedContent;
+                }
+            }
+        });
+    }
+
+    function handleMutations(mutationsList) {
+        mutationsList.forEach((mutation) => {
+            if (mutation.type === 'characterData' && mutation.target.parentNode.matches(targetSelectorSpan)) {
+                replaceCurrencySymbol(mutation.target.parentNode);
+            } else if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (node.matches(targetSelectorPath)) {
+                            updatePathAttributes(node);
+                        } else if (node.matches(targetSelectorSpan)) {
+                            replaceCurrencySymbol(node);
+                        }
+                    }
+                });
+
+                const targetInput = document.querySelector(targetInputSelector);
+                const targetInputProfit = document.querySelector(targetInputSelectorProfit);
+                if (targetInput) handleInputChange(targetInput, 0);
+                if (targetInputProfit) handleInputChange(targetInputProfit, 1);
+            }
+        });
+    }
+
+    const observer = new MutationObserver(handleMutations);
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+    document.querySelectorAll(`${targetSelectorPath}, ${targetSelectorSpan}`).forEach((element) => {
+        if (element.matches(targetSelectorPath)) {
+            updatePathAttributes(element);
+        } else if (element.matches(targetSelectorSpan)) {
+            replaceCurrencySymbol(element);
+        }
+    });
+
+    const initialInput = document.querySelector(targetInputSelector);
+    if (initialInput) {
+        handleInputChange(initialInput, 0);
+    }
+})();
