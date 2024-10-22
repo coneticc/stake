@@ -1,4 +1,3 @@
-
 **Free, Bookmark for Stake.com!**
 
 You can easily use this bookmark to change the properties for stake.com
