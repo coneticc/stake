@@ -91,8 +91,8 @@ javascript:(function() {
         if (isWithinExclusion(spanElement)) return;
     
         const xPathsToUSD = [
-            '/html/body/div[1]/div[2]/div[2]/div[4]/div/div/div/div[1]/div/div/div[2]/div/div/div[1]/div/div/div/div/div/div[2]/div[1]/div[4]/div/div/div/button/div/span[2]',
-            '/html/body/div[1]/div[2]/div[2]/div[4]/div/div/div/div[1]/div/div/div[2]/div/div/div[1]/div/div/div/div/div/div[1]/div[2]/div[1]/div/button/div/span[2]'
+            '//*[@id="main-content"]/div[1]/div/div/div/div/div[2]/div[1]/div[4]/div/div/div/button/div/span[2]',
+            '//*[@id="softswiss_game_container"]/div[2]/div[1]/div/button/div/span[2]'
         ];
     
         const isSpecificElement = xPathsToUSD.some(xPath => {
